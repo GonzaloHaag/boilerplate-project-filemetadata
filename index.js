@@ -1,6 +1,11 @@
 var express = require('express');
 var cors = require('cors');
-require('dotenv').config()
+const bodyParser = require('body-parser');
+require('dotenv').config();
+
+const multer = require('multer'); // Para procesar formularios multipart/form-data mas facil
+const upload = multer();
+
 
 var app = express();
 
@@ -10,6 +15,15 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
+
+// el post del archivo es hacia /api/fileanalyse --> Le paso el name del input del archivo
+app.post('/api/fileanalyse',upload.single('upfile'),(req,res) => {
+  res.json({
+    name:req.file.originalname,
+    type:req.file.mimetype,
+    size:req.file.size
+  })
+})
 
 
 
